@@ -1,17 +1,21 @@
 const request = obj =>{
+    return new Promise((resolve, reject)=>{
+
     const xhr = new XMLHttpRequest();
     xhr.open(obj.method, obj.url, true);
     xhr.send();
-
     xhr.addEventListener('load', ()=>{
         if(xhr.status >= 200 && xhr.status <300){
             //funçaõ de callBac de sucesso
-            obj.sucess(xhr.responseText);
+            resolve(xhr.responseText);
         }else{
             //função de callBac de erro
-            obj.error(xhr.statusText);
+            reject(xhr.statusText);
         }
     })
+        
+    })
+    
 }
 
 document.addEventListener('click', e=>{
@@ -25,20 +29,28 @@ document.addEventListener('click', e=>{
 })
 
 
-function carregaPagina(el){
+async function carregaPagina(el){
     const href = el.getAttribute('href');
     
-    request({
+    const ObjConfig ={
         method: 'GET',
         url: href,
-        sucess(response){
-            console.log(response)
-            carregaResultado(response);
-        },
-        error(error){
-            console.log(error)
-        }
+    }
+    try {
+        const response = await request(ObjConfig);
+        carregaResultado(response);
+    } catch (error) {
+        console.log(error)
+    }
+   
+
+    /* request(ObjConfig).then(response =>{
+        carregaResultado(response);
+    }).catch(error =>{
+        console.log(error);
     })
+    */
+    
 }
 
 function carregaResultado(response){
