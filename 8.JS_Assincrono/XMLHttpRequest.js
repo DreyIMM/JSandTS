@@ -29,12 +29,20 @@ document.addEventListener('click', e=>{
 
 
 async function carregaPagina(el){
-    const href = el.getAttribute('href');
 
-    fetch(href)
-    .then(response  => response.text())
-    .then(html =>     carregaResultado(html))
-    .catch(e => console.error(e))
+    try {
+        const href = el.getAttribute('href');
+        const response = await fetch(href);
+        
+        if(response.status !== 200) throw new Error('Error 404!');
+        
+        const html = await response.text();
+        carregaResultado(html);
+    } catch (error) {
+        console.error(error);
+    }
+   
+    
     
 }
 
